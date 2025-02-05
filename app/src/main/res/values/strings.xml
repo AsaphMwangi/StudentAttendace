@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Student Attendance</string>
+    <string name="student_login">Student Login</string>
+    <string name="lecturer_login">Lecturer Login</string>
+    <string name="l_signup_link">SignUp</string>
+
+</resources>
