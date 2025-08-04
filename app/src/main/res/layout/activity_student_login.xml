@@ -76,13 +76,13 @@
                         android:layout_marginTop="40dp"
                         android:text="Password"
                         android:textSize="18sp"
-                        app:layout_constraintEnd_toEndOf="@+id/student_student_login_password"
+                        app:layout_constraintEnd_toEndOf="@+id/student_login_password"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="@+id/student_student_login_password"
+                        app:layout_constraintStart_toStartOf="@+id/student_login_password"
                         app:layout_constraintTop_toBottomOf="@+id/student_login_email" />
 
                     <EditText
-                        android:id="@+id/student_student_login_password"
+                        android:id="@+id/student_login_password"
                         android:layout_width="320dp"
                         android:layout_height="60dp"
                         android:background="@drawable/login_text_input"
@@ -110,6 +110,20 @@
                     android:background="@drawable/login_screen_button"
                     android:text="Login"
                     android:textColor="@color/white" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/student_signup_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@android:color/transparent"
+                    android:backgroundTint="@android:color/transparent"
+                    android:padding="15dp"
+                    android:text="@string/l_signup_link"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
 
             </LinearLayout>

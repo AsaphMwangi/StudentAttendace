@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, StudentLogin.class));
 
 
-
         });
         lecturer.setOnClickListener(v -> {
 
