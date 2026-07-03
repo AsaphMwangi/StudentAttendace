@@ -17,7 +17,7 @@ public class Authentication {
             return "Invalid email format";
         }
 
-        return "failed";
+        return "success";
     }
     public String lecLogin(String email, String password)
     {
@@ -31,7 +31,7 @@ public class Authentication {
             return "Invalid email format";
         }
 
-        return "failed";
+        return "success";
     }
     public String studSignUp(String name, String email, String password, String studID)
     {
@@ -72,7 +72,7 @@ public class Authentication {
 
 
 
-        return "false";
+        return "true";
     }
     public String lecSignUp(String name, String email, String password, String lecID)
     {

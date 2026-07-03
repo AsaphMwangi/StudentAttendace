@@ -1,5 +1,6 @@
 package com.asaphmwangi.studentattendace.signup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,12 +14,19 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.asaphmwangi.studentattendace.R;
 import com.asaphmwangi.studentattendace.login.Authentication;
+import com.asaphmwangi.studentattendace.models.User;
+import com.asaphmwangi.studentattendace.utils.LoadingDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class StudentSignUp extends AppCompatActivity {
     EditText studID,fullName,email,password;
     AppCompatButton studSignUpBtn;
 
     Authentication authentication;
+    FirebaseAuth mAuth;
+    FirebaseFirestore db;
+    LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +38,17 @@ public class StudentSignUp extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        loadingDialog = new LoadingDialog(this);
+
         studID = findViewById(R.id.student_signup_regno);
         fullName = findViewById(R.id.student_signup_full_name);
         email = findViewById(R.id.student_signup_email);
         password = findViewById(R.id.student_signup_password);
 
-        studSignUpBtn = findViewById(R.id.lecturer_signup_button);
+        studSignUpBtn = findViewById(R.id.student_signup_button);
 
         studSignUpBtn.setOnClickListener(v ->
         {
@@ -51,11 +64,36 @@ public class StudentSignUp extends AppCompatActivity {
 
         authentication = new Authentication();
 
-        String studSignUpMessages = authentication.studSignUp(studName,studEmail,studPass,studIDNo);
+        String validationResult = authentication.studSignUp(studName,studEmail,studPass,studIDNo);
 
-        Toast.makeText(this, studSignUpMessages, Toast.LENGTH_SHORT).show();
+        if (validationResult.contains("❌") || validationResult.contains("Fill") || validationResult.contains("Invalid")) {
+            Toast.makeText(this, validationResult, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-
-
+        loadingDialog.show();
+        mAuth.createUserWithEmailAndPassword(studEmail, studPass)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        String uid = mAuth.getCurrentUser().getUid();
+                        User user = new User(uid, studName, studEmail, "Student", studIDNo);
+                        db.collection("users").document(uid).set(user)
+                                .addOnSuccessListener(aVoid -> {
+                                    loadingDialog.dismiss();
+                                    Toast.makeText(StudentSignUp.this, "Sign up successful", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(StudentSignUp.this, com.asaphmwangi.studentattendace.dashboard.StudentDashboard.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> {
+                                    loadingDialog.dismiss();
+                                    Toast.makeText(StudentSignUp.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    } else {
+                        loadingDialog.dismiss();
+                        Toast.makeText(StudentSignUp.this, "Authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
